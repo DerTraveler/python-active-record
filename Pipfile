@@ -5,6 +5,7 @@ verify_ssl = true
 
 [dev-packages]
 mamba = "*"
+expects = "*"
 
 [packages]
 
