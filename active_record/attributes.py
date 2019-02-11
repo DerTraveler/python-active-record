@@ -1,7 +1,7 @@
 from copy import deepcopy
 
 
-class MissingAttribute(Exception):
+class MissingAttribute(AttributeError):
     def __init__(self, attribute):
         super().__init__("No attribute '{0}'".format(attribute))
 
