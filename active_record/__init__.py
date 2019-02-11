@@ -3,6 +3,8 @@ from .attributes import Attributes
 
 class ActiveRecord:
     def __init__(self, **attributes):
+        if type(self) == ActiveRecord:
+            raise TypeError("Can't instantiate ActiveRecord directly.")
         self._original_set('_attributes', Attributes(**attributes))
 
     @property
