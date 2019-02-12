@@ -4,7 +4,7 @@ from expects import *
 
 from active_record import ActiveRecord
 from active_record.attributes import Attribute
-from active_record.persistence import PersistenceStrategy
+from active_record.persistence import PersistenceStrategy, InMemoryPersistence, RecordNotFound
 
 
 class TestRecord(ActiveRecord):
@@ -76,3 +76,42 @@ with describe(ActiveRecord):
                 with context('When giving wrong key values as keyword parameter'):
                     with it('raises ValueError'):
                         expect(lambda: MultiKeyRecord.find(name='Okabe', age=22)).to(raise_error(ValueError))
+
+
+with describe(InMemoryPersistence):
+    with before.each:
+        self.persistence = InMemoryPersistence()
+
+    with describe('save'):
+        with context('With a single key record class'):
+            with it('can store a Record'):
+                record = TestRecord(lab_member_no=1, name='Okabe')
+                expect(lambda: self.persistence.save(record)).not_to(raise_error)
+
+        with context('With a multiple key record class'):
+            with it('can store a Record'):
+                record = MultiKeyRecord(name='Okabe', lab_member_no=1)
+                expect(lambda: self.persistence.save(record)).not_to(raise_error)
+
+    with describe('find'):
+        with context('With a single key record class'):
+            with it('can retrieve a stored Record'):
+                record = TestRecord(lab_member_no=1, name='Okabe')
+                self.persistence.save(record)
+                retrieved = self.persistence.find({'lab_member_no': 1})
+                expect(retrieved).to(be_a(TestRecord) and have_properties(lab_member_no=1, name='Okabe'))
+
+            with context('when trying to retrieve a non existing Record'):
+                with it('raises RecordNotFound'):
+                    expect(lambda: self.persistence.find({'lab_member_no': 1})).to(raise_error(RecordNotFound))
+
+        with context('With a multiple key record class'):
+            with it('can retrieve a stored Record'):
+                record = MultiKeyRecord(name='Okabe', lab_member_no=1)
+                self.persistence.save(record)
+                retrieved = self.persistence.find({'lab_member_no': 1, 'name': 'Okabe'})
+                expect(retrieved).to(be_a(MultiKeyRecord) and have_properties(lab_member_no=1, name='Okabe'))
+
+            with context('when trying to retrieve a non existing Record'):
+                with it('raises RecordNotFound'):
+                    expect(lambda: self.persistence.find({'lab_member_no': 1, 'name': 'Okabe'})).to(raise_error(RecordNotFound))
