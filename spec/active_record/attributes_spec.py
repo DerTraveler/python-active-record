@@ -1,7 +1,7 @@
 from expects import *
 
 from active_record import ActiveRecord
-from active_record.attributes import Attributes, MissingAttribute
+from active_record.attributes import Attributes, MissingAttribute, Attribute
 
 
 with describe(Attributes):
@@ -30,7 +30,7 @@ with describe(Attributes):
 
 
 class TestRecord(ActiveRecord):
-    pass
+    id = Attribute(key=True)
 
 
 with describe(ActiveRecord):
@@ -53,3 +53,8 @@ with describe(ActiveRecord):
                 record = TestRecord(name='Suzuha')
                 record.origin = 2036
                 expect(record.attributes).to(equal({'name': 'Suzuha', 'origin': 2036}))
+
+        with describe('key'):
+            with it('returns the key attributes'):
+                record = TestRecord(id=8, name='Suzuha')
+                expect(record.key).to(equal({'id': 8}))

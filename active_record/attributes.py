@@ -27,13 +27,44 @@ class Attributes:
             yield key
 
 
-class AttributeMethods():
+class Attribute:
+    def __init__(self, key=False):
+        self.key = key
+
+
+def _extract_attributes(class_attributes):
+    attributes = []
+    keys = []
+    for name, value in class_attributes.items():
+        if isinstance(value, Attribute):
+            attributes.append(name)
+            if value.key:
+                keys.append(name)
+
+    for a in attributes:
+            del class_attributes[a]
+
+    return [attributes, keys]
+
+
+class AttributesMeta(type):
+    def __new__(mcs, name, bases, attrs, **kwargs):
+        _attributes, keys = _extract_attributes(attrs)
+        attrs['_keys'] = keys
+        return super().__new__(mcs, name, bases, attrs)
+
+
+class AttributeMethods(metaclass=AttributesMeta):
     def __init__(self, **attributes):
         self._original_set('_attributes', Attributes(**attributes))
 
     @property
     def attributes(self):
         return self._attributes.as_dict()
+
+    @property
+    def key(self):
+        return {attr: self._attributes.get(attr) for attr in self.__class__._keys}
 
     def __getattribute__(self, name):
         try:
