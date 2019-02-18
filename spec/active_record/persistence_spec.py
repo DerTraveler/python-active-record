@@ -82,36 +82,35 @@ with describe(InMemoryPersistence):
     with before.each:
         self.persistence = InMemoryPersistence()
 
-    with describe('save'):
-        with context('With a single key record class'):
+    with shared_context('Persistence Methods'):
+        with describe('save'):
             with it('can store a Record'):
-                record = TestRecord(lab_member_no=1, name='Okabe')
+                record = self.record_class(lab_member_no=1, name='Okabe')
                 expect(lambda: self.persistence.save(record)).not_to(raise_error)
 
-        with context('With a multiple key record class'):
-            with it('can store a Record'):
-                record = MultiKeyRecord(name='Okabe', lab_member_no=1)
-                expect(lambda: self.persistence.save(record)).not_to(raise_error)
-
-    with describe('find'):
-        with context('With a single key record class'):
+        with describe('find'):
             with it('can retrieve a stored Record'):
-                record = TestRecord(lab_member_no=1, name='Okabe')
+                record = self.record_class(occupation='Student', **self.record_key)
                 self.persistence.save(record)
-                retrieved = self.persistence.find({'lab_member_no': 1})
-                expect(retrieved).to(be_a(TestRecord) and have_properties(lab_member_no=1, name='Okabe'))
+                retrieved = self.persistence.find(self.record_key)
+                expect(retrieved).to(be_a(self.record_class) and have_properties(occupation='Student', **self.record_key))
 
             with context('when trying to retrieve a non existing Record'):
                 with it('raises RecordNotFound'):
-                    expect(lambda: self.persistence.find({'lab_member_no': 1})).to(raise_error(RecordNotFound))
+                    expect(lambda: self.persistence.find(self.record_key)).to(raise_error(RecordNotFound))
 
-        with context('With a multiple key record class'):
-            with it('can retrieve a stored Record'):
-                record = MultiKeyRecord(name='Okabe', lab_member_no=1)
-                self.persistence.save(record)
-                retrieved = self.persistence.find({'lab_member_no': 1, 'name': 'Okabe'})
-                expect(retrieved).to(be_a(MultiKeyRecord) and have_properties(lab_member_no=1, name='Okabe'))
+    with context('With a single key record class'):
+        with before.all:
+            self.record_class = TestRecord
+            self.record_key = {'lab_member_no': 1}
 
-            with context('when trying to retrieve a non existing Record'):
-                with it('raises RecordNotFound'):
-                    expect(lambda: self.persistence.find({'lab_member_no': 1, 'name': 'Okabe'})).to(raise_error(RecordNotFound))
+        with included_context('Persistence Methods'):
+            pass
+
+    with context('With a multiple key record class'):
+        with before.all:
+            self.record_class = MultiKeyRecord
+            self.record_key = {'lab_member_no': 1, 'name': 'Okabe'}
+
+        with included_context('Persistence Methods'):
+            pass
