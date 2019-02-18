@@ -31,6 +31,7 @@ with describe(Attributes):
 
 class TestRecord(ActiveRecord):
     id = Attribute(key=True)
+    name = Attribute()
 
 
 with describe(ActiveRecord):

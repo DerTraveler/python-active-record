@@ -1,6 +1,5 @@
 """Attribute related classes."""
 from copy import deepcopy
-from collections import namedtuple
 
 
 class MissingAttribute(AttributeError):
@@ -38,7 +37,16 @@ class Attributes:
             yield key
 
 
-Attribute = namedtuple('Attribute', ['key'])
+class Attribute:
+    """Model attribute."""
+
+    def __init__(self, key=False):
+        self._fields = (key,)
+
+    @property
+    def key(self):
+        """True if the attribute is a key."""
+        return self._fields[0]
 
 
 def _extract_attributes(class_attributes):
