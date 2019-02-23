@@ -4,9 +4,9 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
-mamba = "*"
 expects = "*"
 pylint = "*"
+pytest = "*"
 
 [packages]
 

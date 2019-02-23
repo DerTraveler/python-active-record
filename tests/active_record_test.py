@@ -3,13 +3,12 @@ from expects import *
 from active_record import ActiveRecord
 
 
-class TestRecord(ActiveRecord):
-    pass
-
-
-with describe(ActiveRecord):
-    with it('cannot instantiate a ActiveRecord instance'):
+class TestActiveRecord:
+    def test_cannot_instantiate_instance(self):
         expect(ActiveRecord).to(raise_error(TypeError))
 
-    with it('can instantiate subclasses'):
+    def test_can_instantiate_subclasses(self):
+        class TestRecord(ActiveRecord):
+            pass
+
         expect(TestRecord).not_to(raise_error(TypeError))
