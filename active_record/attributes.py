@@ -4,12 +4,14 @@ from copy import deepcopy
 
 class MissingAttribute(AttributeError):
     """Raised when a nonexisting attributes is accessed."""
+
     def __init__(self, attribute):
         super().__init__("No attribute '{0}'".format(attribute))
 
 
 class Attributes:
     """Contains Record attributes."""
+
     def __init__(self, **attributes):
         self._values = deepcopy(attributes)
 
@@ -66,16 +68,18 @@ def _extract_attributes(class_attributes):
 
 class AttributesMeta(type):
     """Collects key attributes specified in class definition."""
+
     def __new__(cls, name, bases, attrs):
         _attributes, keys = _extract_attributes(attrs)
-        attrs['_keys'] = keys
+        attrs["_keys"] = keys
         return super().__new__(cls, name, bases, attrs)
 
 
 class AttributeMethods(metaclass=AttributesMeta):
     """Attribute related ActiveRecord methods."""
+
     def __init__(self, **attributes):
-        self._original_set('_attributes', Attributes(**attributes))
+        self._original_set("_attributes", Attributes(**attributes))
 
     @property
     def attributes(self):

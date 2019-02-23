@@ -6,12 +6,14 @@ from .attributes import AttributeMethods
 
 class RecordNotFound(Exception):
     """Raised when trying to access an non-existing record."""
+
     def __init__(self, key):
-        super().__init__('Record with key {0} not found'.format(key))
+        super().__init__("Record with key {0} not found".format(key))
 
 
 class PersistenceMethods(AttributeMethods):
     """Persistence related methods."""
+
     def save(self):
         """Save the record."""
         self.__class__.persistence_strategy.save(self)
@@ -29,18 +31,19 @@ class PersistenceMethods(AttributeMethods):
         """
         if single_key:
             if len(cls._keys) > 1:
-                raise ValueError('Single key given but key consists of: {0}'.format(cls._keys))
+                raise ValueError("Single key given but key consists of: {0}".format(cls._keys))
 
             key = {cls._keys[0]: single_key}
 
         if set(key.keys()) != set(cls._keys):
-            raise ValueError('Invalid key. Expected attributes: {0}'.format(cls._keys))
+            raise ValueError("Invalid key. Expected attributes: {0}".format(cls._keys))
 
         return cls.persistence_strategy.find(key)
 
 
 class PersistenceStrategy(ABC):
     """Strategy for persisting records."""
+
     @abstractmethod
     def save(self, record):
         """Save the specified record."""
@@ -57,6 +60,7 @@ class PersistenceStrategy(ABC):
 
 class InMemoryPersistence(PersistenceStrategy):
     """Persists ActiveRecords in memory."""
+
     def __init__(self):
         self.store = {}
 

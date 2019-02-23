@@ -7,8 +7,12 @@ verify_ssl = true
 expects = "*"
 pylint = "*"
 pytest = "*"
+black = "*"
 
 [packages]
 
 [requires]
 python_version = "3.6"
+
+[pipenv]
+allow_prereleases = true
