@@ -1,4 +1,4 @@
-from expects import *
+from expects import expect, equal, raise_error, be_true, be_false, have_properties
 import pytest
 
 from active_record import ActiveRecord

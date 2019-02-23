@@ -1,4 +1,4 @@
-from expects import *
+from expects import expect, raise_error
 
 from active_record import ActiveRecord
 

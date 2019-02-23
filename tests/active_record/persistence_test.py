@@ -1,6 +1,6 @@
 from unittest.mock import Mock
 
-from expects import *
+from expects import expect, equal, raise_error
 import pytest
 
 from active_record import ActiveRecord
