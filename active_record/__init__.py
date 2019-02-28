@@ -1,4 +1,3 @@
-"""Active Record."""
 from .attributes import AttributeMethods
 from .persistence import PersistenceMethods
 
