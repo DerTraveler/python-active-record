@@ -8,6 +8,7 @@ expects = "*"
 pytest = "*"
 black = "*"
 flake8 = "*"
+pytest-watch = "*"
 
 [packages]
 
