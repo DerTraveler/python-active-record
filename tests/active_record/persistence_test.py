@@ -13,7 +13,7 @@ class SingleKeyRecord(ActiveRecord):
 
     @classmethod
     def instance(cls):
-        return cls(lab_member_no=1)
+        return cls(lab_member_no=1, occupation="Student")
 
 
 class MultiKeyRecord(ActiveRecord):
@@ -22,7 +22,7 @@ class MultiKeyRecord(ActiveRecord):
 
     @classmethod
     def instance(cls):
-        return cls(lab_member_no=1, name="Okarin")
+        return cls(lab_member_no=1, name="Okarin", occupation="Student")
 
 
 @pytest.fixture(autouse=True)
@@ -66,6 +66,12 @@ class TestPersistence:
             args, kwargs = find_args
             expect(lambda: record_class.find(*args, **kwargs)).to(raise_error(ValueError))
 
+    class TestFindBy:
+        @pytest.mark.parametrize("record_class", [SingleKeyRecord, MultiKeyRecord])
+        def test_calls_find_by_on_strategy(self, record_class):
+            record_class.find_by(occupation="Student")
+            record_class.persistence_strategy.find_by.assert_called_with({"occupation": "Student"})
+
 
 class TestInMemoryPersistence:
     @pytest.fixture
@@ -85,3 +91,13 @@ class TestInMemoryPersistence:
 
         def test_nonexisting(self, strategy):
             expect(lambda: strategy.find({"key": "nonexisting"})).to(raise_error(RecordNotFound))
+
+    class TestFindBy:
+        @pytest.mark.parametrize("record", [SingleKeyRecord.instance(), MultiKeyRecord.instance()])
+        def test_success(self, record, strategy):
+            strategy.save(record)
+            retrieved = strategy.find_by({"occupation": "Student"})
+            expect(retrieved).to(equal(record))
+
+        def test_nonexisting(self, strategy):
+            expect(lambda: strategy.find_by({"attribute": "nonexisting"})).to(raise_error(RecordNotFound))
