@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from .attributes import AttributeMethods
+from .attribute_methods import AttributeMethods
 
 
 class RecordNotFound(Exception):

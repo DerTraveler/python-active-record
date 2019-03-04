@@ -1,4 +1,4 @@
-from .attributes import AttributeMethods
+from .attribute_methods import AttributeMethods
 from .persistence import PersistenceMethods
 
 
