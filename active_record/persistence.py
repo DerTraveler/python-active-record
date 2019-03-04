@@ -19,6 +19,7 @@ class PersistenceStrategy(ABC):
     def find_by(self, attributes):
         pass
 
+    @abstractmethod
     def query(self, conditions):
         pass
 
@@ -45,6 +46,10 @@ class InMemoryPersistence(PersistenceStrategy):
         for record in self.store.values():
             if self._dict_contains(record, attributes):
                 return record
+
+    def query(self, conditions):
+        for record in self.store.values():
+            yield record
 
     @staticmethod
     def _hash_key(key):
