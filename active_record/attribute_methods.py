@@ -16,14 +16,14 @@ def _extract_attributes(class_attributes):
     return [attributes, keys]
 
 
-class AttributesMeta(type):
+class AttributesMethodsMeta(type):
     def __new__(cls, name, bases, attrs):
         _attributes, keys = _extract_attributes(attrs)
         attrs["_keys"] = keys
         return super().__new__(cls, name, bases, attrs)
 
 
-class AttributeMethods(metaclass=AttributesMeta):
+class AttributeMethods:
     def __init__(self, **attributes):
         self._original_set("_attributes", Attributes(**attributes))
 
