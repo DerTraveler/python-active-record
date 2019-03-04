@@ -1,6 +1,6 @@
 from unittest.mock import Mock
 
-from expects import expect, equal, raise_error
+from expects import expect, equal, raise_error, be_none
 import pytest
 
 from active_record import ActiveRecord
@@ -49,9 +49,10 @@ class TestPersistenceMethods:
         )
         def test_success(self, record_class, find_args, expected_args):
             args, kwargs = find_args
+            record_class.persistence_strategy.find.return_value = expected_args
             result = record_class.find(*args, **kwargs)
             record_class.persistence_strategy.find.assert_called_with(expected_args)
-            expect(result).to(equal(record_class.persistence_strategy.find.return_value))
+            expect(result).to(equal(record_class(**expected_args)))
 
         @pytest.mark.parametrize(
             "record_class,find_args",
@@ -68,6 +69,15 @@ class TestPersistenceMethods:
 
     class TestFindBy:
         @pytest.mark.parametrize("record_class", [SingleKeyRecord, MultiKeyRecord])
-        def test_calls_find_by_on_strategy(self, record_class):
-            record_class.find_by(occupation="Student")
+        def test_success(self, record_class):
+            record_class.persistence_strategy.find_by.return_value = record_class.instance().attributes
+            result = record_class.find_by(occupation="Student")
             record_class.persistence_strategy.find_by.assert_called_with({"occupation": "Student"})
+            expect(result).to(equal(record_class.instance()))
+
+        @pytest.mark.parametrize("record_class", [SingleKeyRecord, MultiKeyRecord])
+        def test_nonexisting(self, record_class):
+            record_class.persistence_strategy.find_by.return_value = None
+            result = record_class.find_by(occupation="Student")
+            record_class.persistence_strategy.find_by.assert_called_with({"occupation": "Student"})
+            expect(result).to(be_none)

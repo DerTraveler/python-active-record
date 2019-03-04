@@ -16,8 +16,10 @@ class PersistenceMethods(AttributeMethods):
         if set(key.keys()) != set(cls._keys):
             raise ValueError("Invalid key. Expected attributes: {0}".format(cls._keys))
 
-        return cls.persistence_strategy.find(key)
+        return cls(**cls.persistence_strategy.find(key))
 
     @classmethod
     def find_by(cls, **attributes):
-        return cls.persistence_strategy.find_by(attributes)
+        result_attributes = cls.persistence_strategy.find_by(attributes)
+        if result_attributes:
+            return cls(**result_attributes)
