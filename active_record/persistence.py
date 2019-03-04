@@ -32,7 +32,7 @@ class InMemoryPersistence(PersistenceStrategy):
         self.store = {}
 
     def save(self, record):
-        self.store[self._hash_key(record.key)] = record
+        self.store[self._hash_key(record.key)] = record.attributes
 
     def find(self, key):
         hashed_key = self._hash_key(key)
@@ -43,21 +43,16 @@ class InMemoryPersistence(PersistenceStrategy):
 
     def find_by(self, attributes):
         for record in self.store.values():
-            if self._record_has_attributes(record, attributes):
+            if self._dict_contains(record, attributes):
                 return record
-
-        self.raise_record_not_found({})
 
     @staticmethod
     def _hash_key(key):
         return tuple([(k, key[k]) for k in sorted(key.keys())])
 
     @staticmethod
-    def _record_has_attributes(record, attributes):
-        try:
-            for k, v in attributes.items():
-                if getattr(record, k) != v:
-                    return False
-            return True
-        except AttributeError:
-            return False
+    def _dict_contains(dict_a, dict_b):
+        for k, v in dict_b.items():
+            if k not in dict_a or dict_a[k] != v:
+                return False
+        return True

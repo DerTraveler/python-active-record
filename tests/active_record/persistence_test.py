@@ -1,4 +1,4 @@
-from expects import expect, equal, raise_error
+from expects import expect, equal, raise_error, be_none
 import pytest
 
 from active_record import ActiveRecord
@@ -37,7 +37,7 @@ class TestInMemoryPersistence:
         def test_success(self, record, strategy):
             strategy.save(record)
             retrieved = strategy.find(record.key)
-            expect(retrieved).to(equal(record))
+            expect(retrieved).to(equal(record.attributes))
 
         def test_nonexisting(self, strategy):
             expect(lambda: strategy.find({"key": "nonexisting"})).to(raise_error(RecordNotFound))
@@ -47,7 +47,7 @@ class TestInMemoryPersistence:
         def test_success(self, record, strategy):
             strategy.save(record)
             retrieved = strategy.find_by({"occupation": "Student"})
-            expect(retrieved).to(equal(record))
+            expect(retrieved).to(equal(record.attributes))
 
         def test_nonexisting(self, strategy):
-            expect(lambda: strategy.find_by({"attribute": "nonexisting"})).to(raise_error(RecordNotFound))
+            expect(strategy.find_by({"attribute": "nonexisting"})).to(be_none)
