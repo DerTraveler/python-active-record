@@ -1,5 +1,8 @@
 from copy import deepcopy
 
+from attr import attrs, attrib
+from attr.validators import instance_of
+
 
 class MissingAttribute(AttributeError):
     def __init__(self, attribute):
@@ -27,10 +30,6 @@ class Attributes:
             yield key
 
 
+@attrs(frozen=True)
 class Attribute:
-    def __init__(self, key=False):
-        self._fields = (key,)
-
-    @property
-    def key(self):
-        return self._fields[0]
+    key = attrib(validator=instance_of(bool), default=False)
