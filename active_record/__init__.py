@@ -13,3 +13,9 @@ class ActiveRecord(PersistenceMethods, AttributeMethods, metaclass=ActiveRecordM
         if type(self) == ActiveRecord:  # pylint: disable=unidiomatic-typecheck
             raise TypeError("Can't instantiate ActiveRecord directly.")
         super().__init__(*args, **kwargs)
+
+    def __eq__(self, other):
+        if not (isinstance(other, type(self)) or isinstance(self, type(other))):
+            return False
+
+        return self.attributes == other.attributes
