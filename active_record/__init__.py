@@ -1,12 +1,13 @@
 from .attribute_methods import AttributeMethods
 from .meta import ActiveRecordMeta
 from .persistence_methods import PersistenceMethods
+from .query_methods import QueryMethods
 
 
-__all__ = ["attribute_methods", "attributes", "persistence_methods", "persistence"]
+__all__ = ["attribute_methods", "attributes", "persistence_methods", "persistence", "query_methods"]
 
 
-class ActiveRecord(PersistenceMethods, AttributeMethods, metaclass=ActiveRecordMeta):
+class ActiveRecord(PersistenceMethods, AttributeMethods, QueryMethods, metaclass=ActiveRecordMeta):
     """Active Record."""
 
     def __init__(self, *args, **kwargs):

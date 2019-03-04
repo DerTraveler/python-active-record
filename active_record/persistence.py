@@ -19,6 +19,9 @@ class PersistenceStrategy(ABC):
     def find_by(self, attributes):
         pass
 
+    def query(self, conditions):
+        pass
+
     @staticmethod
     def raise_record_not_found(key):
         raise RecordNotFound(key)
