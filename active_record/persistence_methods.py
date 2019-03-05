@@ -6,14 +6,10 @@ class PersistenceMethods(AttributeMethods):
         self.__class__.persistence_strategy.save(self)
 
     @classmethod
-    def find(cls, single_key=None, **key):
-        if single_key:
-            if len(cls._keys) > 1:
-                raise ValueError("Single key given but key consists of: {0}".format(cls._keys))
+    def find(cls, *args, **kwargs):
+        key = cls.args_as_key(*args, **kwargs)
 
-            key = {cls._keys[0]: single_key}
-
-        if set(key.keys()) != set(cls._keys):
+        if not key:
             raise ValueError("Invalid key. Expected attributes: {0}".format(cls._keys))
 
         return cls(**cls.persistence_strategy.find(key))
@@ -23,3 +19,19 @@ class PersistenceMethods(AttributeMethods):
         result_attributes = cls.persistence_strategy.find_by(attributes)
         if result_attributes:
             return cls(**result_attributes)
+
+    @classmethod
+    def args_as_key(cls, *args, **kwargs):
+        if args:
+            if len(args) > 1:
+                raise ValueError("Ambiguous multiple key values")
+
+            if len(cls._keys) > 1:
+                raise ValueError("Single key given but key consists of: {0}".format(cls._keys))
+
+            return {cls._keys[0]: args[0]}
+
+        if set(kwargs.keys()) != set(cls._keys):
+            return None
+
+        return kwargs
