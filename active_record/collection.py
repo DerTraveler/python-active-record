@@ -1,3 +1,6 @@
+from .query_methods import QueryConditions
+
+
 class ActiveRecordCollection:
     class Iterator:
         def __init__(self, record_class, *, conditions):
@@ -19,3 +22,5 @@ class ActiveRecordCollection:
         key = self.Record.args_as_key(*args, **attributes)
         if key:
             return self.Record.persistence_strategy.key_exists(key, self.conditions)
+
+        return self.Record.persistence_strategy.exists(self.conditions and QueryConditions(attributes=attributes))

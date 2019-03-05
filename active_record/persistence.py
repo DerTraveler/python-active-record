@@ -27,6 +27,10 @@ class PersistenceStrategy(ABC):
     def key_exists(self, key, conditions):
         pass
 
+    @abstractmethod
+    def exists(self, conditions):
+        pass
+
     @staticmethod
     def raise_record_not_found(key):
         raise RecordNotFound(key)
@@ -56,6 +60,9 @@ class InMemoryPersistence(PersistenceStrategy):
             yield record
 
     def key_exists(self, key, conditions):
+        pass
+
+    def exists(self, conditions):
         pass
 
     @staticmethod

@@ -43,3 +43,15 @@ class TestCollection:
 
             record_class.persistence_strategy.key_exists.assert_called_with(expected_key, conditions)
             expect(result).to(equal(strategy_result))
+
+        @pytest.mark.parametrize("strategy_result", [True, False])
+        @pytest.mark.parametrize("record_class", [Record, TwoKeyRecord])
+        def test_with_attributes(self, record_class, strategy_result):
+            record_class.persistence_strategy.exists.return_value = strategy_result
+            conditions = QueryConditions()
+            collection = record_class.Collection(conditions)
+
+            result = collection.exists(occupation="Student")
+
+            record_class.persistence_strategy.exists.assert_called_with(QueryConditions(attributes={"occupation": "Student"}))
+            expect(result).to(equal(strategy_result))
