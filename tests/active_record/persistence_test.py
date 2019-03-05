@@ -64,8 +64,19 @@ class TestInMemoryPersistence:
                 ],
             ],
         )
-        def test_success(self, records, strategy):
+        def test_without_conditions(self, records, strategy):
             for r in records:
                 strategy.save(r)
             retrieved = strategy.query(QueryConditions())
             expect(retrieved).to(contain_only(*[r.attributes for r in records]))
+
+        def test_with_attribute_conditions(self, strategy):
+            records = [
+                {"lab_member_no": 1, "occupation": "Student"},
+                {"lab_member_no": 2, "occupation": "Student"},
+                {"lab_member_no": 3, "occupation": "Cosplayer"},
+            ]
+            for r in records:
+                strategy.save(SingleKeyRecord(**r))
+            retrieved = strategy.query(QueryConditions(attributes={"occupation": "Student"}))
+            expect(retrieved).to(contain_only(records[0], records[1]))

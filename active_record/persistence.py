@@ -57,7 +57,8 @@ class InMemoryPersistence(PersistenceStrategy):
 
     def query(self, conditions):
         for record in self.store.values():
-            yield record
+            if self._dict_contains(record, conditions.attributes):
+                yield record
 
     def key_exists(self, key, conditions):
         pass
