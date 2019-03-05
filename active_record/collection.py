@@ -19,7 +19,3 @@ class ActiveRecordCollection:
         key = self.Record.args_as_key(*args, **attributes)
         if key:
             return self.Record.persistence_strategy.key_exists(key, self.conditions)
-
-
-def build_collection_class(record_class):
-    return type("{0}Collection".format(record_class.__name__), (ActiveRecordCollection,), {"Record": record_class})
