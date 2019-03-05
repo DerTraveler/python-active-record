@@ -1,5 +1,7 @@
 from abc import ABC, abstractmethod
 
+from .query_methods import QueryConditions
+
 
 class RecordNotFound(Exception):
     def __init__(self, key):
@@ -51,9 +53,8 @@ class InMemoryPersistence(PersistenceStrategy):
         return self.store[hashed_key]
 
     def find_by(self, attributes):
-        for record in self.store.values():
-            if self._dict_contains(record, attributes):
-                return record
+        records_with_attributes = self.query(QueryConditions(attributes=attributes))
+        return next(records_with_attributes, None)
 
     def query(self, conditions):
         for record in self.store.values():
