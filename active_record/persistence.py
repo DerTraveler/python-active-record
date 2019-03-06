@@ -62,12 +62,7 @@ class InMemoryPersistence(PersistenceStrategy):
                 yield record
 
     def key_exists(self, key, conditions):
-        try:
-            records_with_key = self.query(conditions & QueryConditions(attributes=key))
-            next(records_with_key)
-            return True
-        except StopIteration:
-            return False
+        return self.exists(conditions & QueryConditions(attributes=key))
 
     def exists(self, conditions):
         try:
