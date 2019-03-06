@@ -80,3 +80,46 @@ class TestInMemoryPersistence:
                 strategy.save(SingleKeyRecord(**r))
             retrieved = strategy.query(QueryConditions(attributes={"occupation": "Student"}))
             expect(retrieved).to(contain_only(records[0], records[1]))
+
+    class TestKeyExists:
+        @pytest.mark.parametrize(
+            "records,key,conditions,result",
+            [
+                ([{"lab_member_no": 1}], {"lab_member_no": 1}, QueryConditions(), True),
+                ([{"lab_member_no": 1}], {"lab_member_no": 2}, QueryConditions(), False),
+                (
+                    [{"lab_member_no": 1, "occupation": "Student"}, {"lab_member_no": 2, "occupation": "Hacker"}],
+                    {"lab_member_no": 1},
+                    QueryConditions(attributes={"occupation": "Student"}),
+                    True,
+                ),
+                (
+                    [{"lab_member_no": 1, "occupation": "Student"}, {"lab_member_no": 2, "occupation": "Hacker"}],
+                    {"lab_member_no": 2},
+                    QueryConditions(attributes={"occupation": "Student"}),
+                    False,
+                ),
+            ],
+        )
+        def test_without_conditions(self, strategy, records, key, conditions, result):
+            for r in records:
+                strategy.save(SingleKeyRecord(**r))
+
+            expect(strategy.key_exists(key, conditions)).to(equal(result))
+
+    class TestExists:
+        @pytest.mark.parametrize(
+            "records,conditions,result",
+            [
+                ([{"lab_member_no": 1, "occupation": "Student"}], QueryConditions(attributes={"occupation": "Student"}), True),
+                ([{"lab_member_no": 1, "occupation": "Student"}], QueryConditions(attributes={"occupation": "Hacker"}), False),
+                ([], QueryConditions(attributes={"occupation": "Student"}), False),
+                ([{"lab_member_no": 1}], QueryConditions(), True),
+                ([], QueryConditions(), False),
+            ],
+        )
+        def test_existence(self, strategy, records, conditions, result):
+            for r in records:
+                strategy.save(SingleKeyRecord(**r))
+
+            expect(strategy.exists(conditions)).to(equal(result))

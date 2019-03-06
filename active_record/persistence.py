@@ -62,10 +62,20 @@ class InMemoryPersistence(PersistenceStrategy):
                 yield record
 
     def key_exists(self, key, conditions):
-        pass
+        try:
+            records_with_key = self.query(conditions & QueryConditions(attributes=key))
+            next(records_with_key)
+            return True
+        except StopIteration:
+            return False
 
     def exists(self, conditions):
-        pass
+        try:
+            records = self.query(conditions)
+            next(records)
+            return True
+        except StopIteration:
+            return False
 
     @staticmethod
     def _hash_key(key):
