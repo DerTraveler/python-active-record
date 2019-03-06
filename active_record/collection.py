@@ -23,4 +23,4 @@ class ActiveRecordCollection:
         if key:
             return self.Record.persistence_strategy.key_exists(key, self.conditions)
 
-        return self.Record.persistence_strategy.exists(self.conditions and QueryConditions(attributes=attributes))
+        return self.Record.persistence_strategy.exists(self.conditions & QueryConditions(attributes=attributes))
