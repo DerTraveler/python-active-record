@@ -1,6 +1,11 @@
 from .attribute_methods import AttributeMethods
 
 
+class RecordNotFound(Exception):
+    def __init__(self, key):
+        super().__init__("Record with key {0} not found".format(key))
+
+
 class PersistenceMethods(AttributeMethods):
     def save(self):
         self.__class__.persistence_strategy.save(self)

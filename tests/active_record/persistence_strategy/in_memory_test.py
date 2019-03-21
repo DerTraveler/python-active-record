@@ -3,7 +3,8 @@ import pytest
 
 from active_record import ActiveRecord
 from active_record.attributes import Attribute
-from active_record.persistence import InMemoryPersistence, RecordNotFound
+from active_record.persistence_strategy import RecordNotFound
+from active_record.persistence_strategy.in_memory import InMemoryPersistence
 from active_record.query_methods import QueryConditions
 
 

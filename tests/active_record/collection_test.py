@@ -5,7 +5,7 @@ import pytest
 
 from active_record import ActiveRecord
 from active_record.attributes import Attribute
-from active_record.persistence import PersistenceStrategy
+from active_record.persistence_strategy import PersistenceStrategy
 from active_record.query_methods import QueryConditions
 
 

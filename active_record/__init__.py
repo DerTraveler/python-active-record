@@ -8,8 +8,6 @@ __all__ = ["attribute_methods", "attributes", "persistence_methods", "persistenc
 
 
 class ActiveRecord(PersistenceMethods, AttributeMethods, QueryMethods, metaclass=ActiveRecordMeta):
-    """Active Record."""
-
     def __init__(self, *args, **kwargs):
         if type(self) == ActiveRecord:  # pylint: disable=unidiomatic-typecheck
             raise TypeError("Can't instantiate ActiveRecord directly.")
